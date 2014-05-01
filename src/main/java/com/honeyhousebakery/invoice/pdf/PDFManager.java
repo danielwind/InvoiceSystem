@@ -292,7 +292,7 @@ public class PDFManager {
     private static void addSubtotalLines(PdfPTable table, Order order) {
             
             PdfPCell cell1 = new PdfPCell(new Paragraph("SUBTOTAL ($) ", tableHeaderFont));
-            PdfPCell cell2 = new PdfPCell(new Paragraph(order.getOrderTotalAmount().toPlainString(), tableValueFont));
+            PdfPCell cell2 = new PdfPCell(new Paragraph(order.getOrderFullTotalAmount().toPlainString(), tableValueFont));
             
             //set column span to 5
             cell1.setColspan(5);
@@ -310,7 +310,7 @@ public class PDFManager {
     private static void addDiscountLines(PdfPTable table, Order order) {
             
             PdfPCell cell1 = new PdfPCell(new Paragraph("DISCOUNT ($) ", tableHeaderFont));
-            PdfPCell cell2 = new PdfPCell(new Paragraph(order.getAppliedDiscount().toPlainString(), tableValueFont));
+            PdfPCell cell2 = new PdfPCell(new Paragraph(order.getDiscount().toPlainString(), tableValueFont));
             
             //set column span to 5
             cell1.setColspan(5);
@@ -328,7 +328,7 @@ public class PDFManager {
     private static void addTotalLines(PdfPTable table, Order order) {
             
             PdfPCell cell1 = new PdfPCell(new Paragraph("TOTAL ($) ", tableHeaderFont));
-            PdfPCell cell2 = new PdfPCell(new Paragraph(order.getOrderTotalWithDiscount(), tableValueFont));
+            PdfPCell cell2 = new PdfPCell(new Paragraph(order.getOrderTotalAmount().toPlainString(), tableValueFont));
             
             
             //set column span to 5

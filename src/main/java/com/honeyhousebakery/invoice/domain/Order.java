@@ -17,12 +17,12 @@ public class Order {
     private Client client;
     private OrderType type;
     protected List<Purchase> purchases;
-    private String orderTotalWithDiscount;
+    private BigDecimal discount;
 
     public Order() {
         this.purchases = new ArrayList<Purchase>();
         this.invoiceId = InvoiceUtil.getNextInvoiceID();
-        this.orderTotalWithDiscount = "0.00";
+        this.discount = BigDecimal.ZERO;
     }
     
     /**
@@ -48,6 +48,20 @@ public class Order {
     
     public String getInvoiceId() {
         return this.invoiceId;
+    }
+
+    /**
+     * @return the discount
+     */
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    /**
+     * @param discount the discount to set
+     */
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
     }
 
     /**
@@ -82,32 +96,22 @@ public class Order {
         this.date = date;
     }
 
-    /**
-     * @return the orderTotalWithDiscount
-     */
-    public String getOrderTotalWithDiscount() {
-        return orderTotalWithDiscount;
-    }
-
-    /**
-     * @param orderTotalWithDiscount the orderTotalWithDiscount to set
-     */
     public void setOrderTotalWithDiscount(String orderTotalWithDiscount) {
         
         if(!orderTotalWithDiscount.equals("")) {
             
             BigDecimal discountTotal = new BigDecimal(orderTotalWithDiscount);
         
-            int result = discountTotal.compareTo(getOrderTotalAmount());
+            int result = discountTotal.compareTo(getOrderFullTotalAmount());
 
             switch(result) {
 
                 case -1:
-                  this.orderTotalWithDiscount = orderTotalWithDiscount;
+                  this.discount = getOrderFullTotalAmount().subtract(discountTotal);
                 break;
 
                 case 0:
-                  this.orderTotalWithDiscount = getOrderTotalAmount().toPlainString();  
+                  this.discount = BigDecimal.ZERO;  
                   System.out.println("Disount Total and Order total are equal hence doing nothing...");
                 break;
 
@@ -117,11 +121,8 @@ public class Order {
             }
             
         } else {
-            this.orderTotalWithDiscount = getOrderTotalAmount().toPlainString();
+            this.discount = BigDecimal.ZERO; 
         }
-        
-        
-        
     }
     
     public BigDecimal getOrderTotalAmount() {
@@ -132,19 +133,18 @@ public class Order {
             total = total.add(purchase.getLinetotal());
         }
         
-        return total;
+        return total.subtract(discount);
     }
     
-    public BigDecimal getAppliedDiscount() {
+    public BigDecimal getOrderFullTotalAmount() {
         
-        BigDecimal discountDifference = new BigDecimal("0.00");
-        BigDecimal discountTotal = new BigDecimal(orderTotalWithDiscount);
+        BigDecimal total = new BigDecimal("0.00");
         
-        if(!orderTotalWithDiscount.equals("0.00")){
-            discountDifference = getOrderTotalAmount().subtract(discountTotal);
+        for (Purchase purchase : purchases) {
+            total = total.add(purchase.getLinetotal());
         }
         
-        return discountDifference;
+        return total;
     }
     
 }

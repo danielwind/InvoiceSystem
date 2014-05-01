@@ -93,6 +93,7 @@ public class Application extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Top.png")));
         getContentPane().setLayout(new java.awt.FlowLayout());
 
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(978, 800));
@@ -426,13 +427,12 @@ public class Application extends javax.swing.JFrame {
                 .add(72, 72, 72)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(jPanel4Layout.createSequentialGroup()
-                            .add(jLabel7)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(orderRetrievalBtn))
-                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE)))
-                .addContainerGap(1038, Short.MAX_VALUE))
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(jLabel7)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(orderRetrievalBtn))
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 815, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -687,7 +687,10 @@ public class Application extends javax.swing.JFrame {
 
             //MAC-OSX only
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Honey House Bakery Invoice System");
-        
+            
+            //externalize db config
+            FilePathUtil.createDatabaseFile();
+            
             //instantiate HSQLDB
             HSQLDB = new HsqlEmbeddedServer();
         

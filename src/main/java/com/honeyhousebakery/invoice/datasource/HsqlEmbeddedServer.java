@@ -13,27 +13,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hsqldb.Server;
-
 public final class HsqlEmbeddedServer {
 	
-	private static final String DATABASE_NAME = "invoiceSystem";
-	private static final String DATABASE_PATH = "file:src/main/resources/db";
+	private static final String DATABASE_PATH = System.getProperty("user.dir") + "/db;shutdown=true";
 	private static final String HSQLDB_JDBC_DRIVER = "org.hsqldb.jdbcDriver";
 	
-	private Server hsqlServer;
         private Connection connection;
 	
 	public HsqlEmbeddedServer() {
 		
 		Logger.getLogger(HsqlEmbeddedServer.class.getName()).log(Level.INFO, "--- INITIALIZING HSQLDB EMBEDDED ENGINE ---");
-		
-		hsqlServer = new Server();
-		hsqlServer.setLogWriter(null);
-                hsqlServer.setSilent(true);
-        
-                hsqlServer.setDatabaseName(0, DATABASE_NAME);
-                hsqlServer.setDatabasePath(0, DATABASE_PATH);
 	}
 	
 	/**
@@ -41,14 +30,13 @@ public final class HsqlEmbeddedServer {
 	 */
 	public void connect() {
 		
-		hsqlServer.start();
 		connection = null;
 		
 		try {
 			
 			Class.forName(HSQLDB_JDBC_DRIVER);
                         
-			connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/" + DATABASE_NAME,"sa","");
+			connection = DriverManager.getConnection("jdbc:hsqldb:" + DATABASE_PATH,"sa","");
 			
 			Logger.getLogger(HsqlEmbeddedServer.class.getName()).log(Level.INFO, "--- HSQLDB ENGINE STARTED SUCCESSFULLY PER CONNECT() REQUEST ---");
 			
@@ -59,6 +47,7 @@ public final class HsqlEmbeddedServer {
                         Logger.getLogger(HsqlEmbeddedServer.class.getName()).log(Level.SEVERE, "** THERE WAS A PROBLEM WITH THE SQL CONNECTION: {0}", e.getMessage().toLowerCase());
 		
 		}
+                
 	}
         
         //use for SQL commands CREATE, DROP, INSERT and UPDATE
@@ -66,8 +55,8 @@ public final class HsqlEmbeddedServer {
             
             String date = order.getDate(); 
             String client = order.getClient().getName();
-            String orderTotalAmount = order.getOrderTotalAmount().toPlainString();
-            String orderTotalWithDiscount = order.getOrderTotalWithDiscount();
+            String orderTotalAmount = order.getOrderFullTotalAmount().toPlainString();
+            String orderTotalWithDiscount = order.getOrderTotalAmount().toPlainString();
             
             Logger.getLogger(HsqlEmbeddedServer.class.getName()).log(Level.INFO, "SAVING ORDER IN DATABASE: [{0}, {1}, {2}, {3}]", new String[]{date, client, orderTotalAmount, orderTotalWithDiscount});
             
@@ -96,7 +85,7 @@ public final class HsqlEmbeddedServer {
             List<Invoice> invoices = new ArrayList<Invoice>();
             
             // run the query
-            ResultSet rs = connection.prepareStatement("SELECT * FROM ORDERS;").executeQuery();
+            ResultSet rs = connection.prepareStatement("SELECT * FROM ORDERS").executeQuery();
             
             while(rs.next()) {
 
@@ -125,7 +114,7 @@ public final class HsqlEmbeddedServer {
             List<Client> clients = new ArrayList<Client>();
             
             // run the query
-            ResultSet rs = connection.prepareStatement("SELECT * FROM CLIENTS;").executeQuery();
+            ResultSet rs = connection.prepareStatement("SELECT * FROM CLIENTS").executeQuery();
             
             while(rs.next()) {
                 
@@ -161,7 +150,6 @@ public final class HsqlEmbeddedServer {
             st.execute("SHUTDOWN");
             
             connection.close();
-	    hsqlServer.stop();
 	}
 
 }

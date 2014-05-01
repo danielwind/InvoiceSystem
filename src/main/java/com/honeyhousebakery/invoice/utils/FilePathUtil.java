@@ -4,8 +4,12 @@ import com.honeyhousebakery.invoice.domain.Client;
 import com.honeyhousebakery.invoice.exceptions.DirectoryNotFoundException;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +31,7 @@ public class FilePathUtil {
     private static final String WINDOWS_DESKTOP_INI = File.separator + "desktop.ini";
     private static final String WINDOWS_FOLDER_ICON = File.separator + "Folder.ico";
     private static final String HOST_OPERATING_SYSTEM = System.getProperty("os.name").toLowerCase();
+    private static final String LOCAL_DATABASE_FILEPATH = System.getProperty("user.dir") + File.separator + "db";
     
     /**
      * This method creates the whole tree structure for the invoices directory.
@@ -97,6 +102,43 @@ public class FilePathUtil {
                  HOST_OPERATING_SYSTEM.indexOf("nux") >=0 || 
                  HOST_OPERATING_SYSTEM.indexOf("mac") >=0){
             setUnixFolderIconToMainDir();
+        }
+    }
+    
+    public static void createDatabaseFile() {
+        
+        File databaseFile = new File(LOCAL_DATABASE_FILEPATH);
+        
+        //This will run only once unless someone deletes the file externally!
+        if(!databaseFile.exists()){
+            try {
+                
+                //get db.script and db.properties from resources folder and copy them to ${user.dir}
+                //since res protocol is read-only and file protocol cannot access resource files
+                InputStream inStream = FilePathUtil.class.getClassLoader().getResourceAsStream("db.script");
+                FileOutputStream outStream = new FileOutputStream(new File(System.getProperty("user.dir") + File.separator + "db.script"));
+               
+                byte[] buffer = new byte[1024];
+                
+                int length;
+                
+                while ((length = inStream.read(buffer)) > 0){
+                    outStream.write(buffer, 0, length);
+                }
+ 
+                inStream.close();
+                outStream.close();  
+                
+                 Logger.getLogger(FilePathUtil.class.getName()).log(Level.INFO, "db.script moved correctly.");  
+                
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(FilePathUtil.class.getName()).log(Level.SEVERE, "db.script cannot be moved."); 
+                Logger.getLogger(FilePathUtil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(FilePathUtil.class.getName()).log(Level.SEVERE, "db.script cannot be moved."); 
+                Logger.getLogger(FilePathUtil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
         
     }

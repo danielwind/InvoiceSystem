@@ -63,14 +63,16 @@
                             <goal>launch4j</goal>
                         </goals>
                         <configuration>
-                            <headerType>gui</headerType>
+                            <headerType>console</headerType>
                             <outfile>${project.build.directory}/hhbinvoicesystem.exe</outfile>
                             <jar>${project.build.directory}/${artifactId}-${version}-shaded.jar</jar>
                             <downloadUrl>http://java.com/download</downloadUrl>
+                            <!-- Commenting due to problems with Windows Installer
                             <classPath>
                                 <mainClass>com.honeyhousebakery.invoice.app.Application</mainClass>
                                 <preCp>anything</preCp>
                             </classPath>
+                            -->
                             <icon>src/main/resources/application.ico</icon>
                             <jre>
                                 <minVersion>1.6.0</minVersion>
