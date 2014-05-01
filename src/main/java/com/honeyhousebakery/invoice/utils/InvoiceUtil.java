@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  */
 public class InvoiceUtil {
     
-    private static int INVOICE_ID = 100;
+    private static int INVOICE_ID = 114;
     private static String LEADING_ZEROES = ""; 
     
     public static String getNextInvoiceID() {
