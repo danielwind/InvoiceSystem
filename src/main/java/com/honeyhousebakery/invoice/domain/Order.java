@@ -103,20 +103,20 @@ public class Order {
             BigDecimal discountTotal = new BigDecimal(orderTotalWithDiscount);
         
             int result = discountTotal.compareTo(getOrderFullTotalAmount());
-
+            
             switch(result) {
 
                 case -1:
-                  this.discount = getOrderFullTotalAmount().subtract(discountTotal);
+                  this.discount = discountTotal;
                 break;
 
                 case 0:
                   this.discount = BigDecimal.ZERO;  
-                  System.out.println("Disount Total and Order total are equal hence doing nothing...");
+                  System.out.println("Discount Total and Order total are equal hence doing nothing...");
                 break;
 
                 case 1:
-                  System.out.println("ERROR: Disount Total IS GREATER THAN Order total hence someone is trying to hack this stuff..."); 
+                  System.out.println("ERROR: Discount Total IS GREATER THAN Order total hence someone is trying to hack this stuff..."); 
                 break;    
             }
             
@@ -127,13 +127,10 @@ public class Order {
     
     public BigDecimal getOrderTotalAmount() {
         
-        BigDecimal total = new BigDecimal("0.00");
+        BigDecimal total = getOrderFullTotalAmount();
+        BigDecimal orderTotal = total.subtract(discount);
         
-        for (Purchase purchase : purchases) {
-            total = total.add(purchase.getLinetotal());
-        }
-        
-        return total.subtract(discount);
+        return orderTotal;
     }
     
     public BigDecimal getOrderFullTotalAmount() {
