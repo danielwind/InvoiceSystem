@@ -91,6 +91,9 @@ public class Application extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         invoicesTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        newKeyField = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Top.png")));
@@ -408,15 +411,39 @@ public class Application extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(251, 250, 250));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jLabel12.setText("Reset From Order ID");
+
+        jButton2.setText("Reset");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 811, Short.MAX_VALUE)
+            .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabel12)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(newKeyField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 142, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton2)))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 151, Short.MAX_VALUE)
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(10, 10, 10)
+                .add(jLabel12)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(newKeyField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton2))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
@@ -437,7 +464,7 @@ public class Application extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(53, Short.MAX_VALUE)
+                .addContainerGap(45, Short.MAX_VALUE)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(orderRetrievalBtn)
                     .add(jLabel7))
@@ -635,6 +662,24 @@ public class Application extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_orderRetrievalBtnActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        
+        if(!newKeyField.getText().isEmpty()){
+            try {
+                
+                HSQLDB.alterOrderPrimaryKey(newKeyField.getText());
+                
+                //clean stuff after successful processing
+                newKeyField.setText("");
+                invoiceIdTxt.setText(String.valueOf(HSQLDB.queryForLastUpdatedOrderId()));
+            } catch (SQLException ex) {
+                Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else {
+            JOptionPane.showMessageDialog(null, "Please enter order ID.");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     private void updateOrderTotal() {
         
         calculatedTotalTxt.setText(currentOrder.getOrderTotalAmount().toPlainString());
@@ -788,10 +833,12 @@ public class Application extends javax.swing.JFrame {
     private javax.swing.JLabel invoiceIdTxt;
     private javax.swing.JTable invoicesTable;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -811,6 +858,7 @@ public class Application extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField nameTxt;
+    private javax.swing.JTextField newKeyField;
     private javax.swing.JButton orderRetrievalBtn;
     private javax.swing.JTextField orderWithDiscountTotalTxt;
     private javax.swing.JTextField priceInput;

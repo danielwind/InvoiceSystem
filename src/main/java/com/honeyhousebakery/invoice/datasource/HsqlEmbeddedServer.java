@@ -151,6 +151,10 @@ public final class HsqlEmbeddedServer {
             
             connection.close();
 	}
+        
+        public synchronized void alterOrderPrimaryKey(String newKey) throws SQLException{
+            connection.prepareStatement("ALTER TABLE ORDERS ALTER COLUMN ID RESTART WITH " + newKey).execute();
+        }
 
 }
 

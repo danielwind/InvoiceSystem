@@ -126,7 +126,7 @@ public class PDFManager {
         
         Image image1 = Image.getInstance(PDFManager.class.getResource(DEFAULT_HEADER_IMAGE));
         image1.setAbsolutePosition(50f, 690f);
-        image1.scaleAbsolute(150f, 100f);
+        image1.scaleAbsolute(190f, 120f);
         //writer.getDirectContent().addImage(image1, true);
         
         Paragraph customerParagraph = new Paragraph(DEFAULT_HEADER_CUSTOMER_TEXT + client.getName() + "\n " + client.getAddress() + "\n " + (client.getState() != null ? client.getState() : "")  + " " + (client.getZipCode() != null ? client.getZipCode() : ""));
