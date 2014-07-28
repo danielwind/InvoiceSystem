@@ -1,0 +1,17 @@
+1. Install Mongo
+
+2. Create user
+
+db.createUser(
+   {
+     user: "hhb",
+     pwd: "h@neyhouse2014",
+     roles: [ "readWrite", "dbAdmin" ]
+   }
+)
+
+3. If another id is needed, you can edit the counters collection (if exists). if not exists, then add the entry in Invoiceutil class.
+
+
+4. To construct EXE file, run mvn clean package
+
