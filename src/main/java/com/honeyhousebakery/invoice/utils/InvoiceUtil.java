@@ -8,29 +8,25 @@ import java.util.logging.Logger;
  */
 public class InvoiceUtil {
     
-    private static int INVOICE_ID = 239;
-    private static String LEADING_ZEROES = ""; 
+    private static String LEADING_ZEROES = "";
     
-    public static String getNextInvoiceID() {
-        
-        INVOICE_ID++;
-        
-        if(INVOICE_ID < 1000){
-            LEADING_ZEROES = "000";
-        } else if(INVOICE_ID >= 1000 && INVOICE_ID < 10000) {
-            LEADING_ZEROES = "00";
-        } else if(INVOICE_ID >= 10000 && INVOICE_ID < 100000) {
-            LEADING_ZEROES = "0";
-        }
-        
-        return LEADING_ZEROES + String.valueOf(INVOICE_ID);
-    }
+    public static final int DEFAULT_ID = 291;
     
-    public static void updateInitialInvoiceID(int id) {
-        Logger.getLogger(InvoiceUtil.class.getName()).log(Level.INFO, "ID AS RETRIEVED FROM DATABASE IS: {0}", id);
+    public static String getNextSequenceId(int id) {
+        
+        Logger.getLogger(InvoiceUtil.class.getName()).log(Level.INFO, "ID AS PASSED FROM DOMAIN OBJ IS: {0}", id);
         
         if(id > 0){
-            INVOICE_ID = id;
-        }   
+            
+            if(id < 1000){
+                LEADING_ZEROES = "000";
+            } else if(id >= 1000 && id < 10000) {
+                LEADING_ZEROES = "00";
+            } else if(id >= 10000 && id < 100000) {
+                LEADING_ZEROES = "0";
+            }
+        } 
+        
+        return LEADING_ZEROES + String.valueOf(id);
     }
 }

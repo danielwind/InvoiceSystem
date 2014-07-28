@@ -18,10 +18,11 @@ public class Order {
     private OrderType type;
     protected List<Purchase> purchases;
     private BigDecimal discount;
+    private String status;
 
-    public Order() {
+    public Order(int id) {
         this.purchases = new ArrayList<Purchase>();
-        this.invoiceId = InvoiceUtil.getNextInvoiceID();
+        this.invoiceId = InvoiceUtil.getNextSequenceId(id);
         this.discount = BigDecimal.ZERO;
     }
     
@@ -40,7 +41,7 @@ public class Order {
     }
 
     /**
-     * @param purchases the purchases to set
+     * @param purchase the purchases to set
      */
     public void addPurchase(Purchase purchase) {
         purchases.add(purchase);

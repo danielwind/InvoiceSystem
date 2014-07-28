@@ -65,7 +65,7 @@
                         <configuration>
                             <headerType>console</headerType>
                             <outfile>${project.build.directory}/hhbinvoicesystem.exe</outfile>
-                            <jar>${project.build.directory}/${artifactId}-${version}-shaded.jar</jar>
+                            <jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <!-- Commenting due to problems with Windows Installer
                             <classPath>
@@ -121,9 +121,9 @@
     </dependency>
     
     <dependency>
-        <groupId>hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>1.8.0.10</version>
+	<groupId>org.mongodb</groupId>
+	<artifactId>mongo-java-driver</artifactId>
+	<version>2.12.2</version>
     </dependency>
     
     <!-- Windows .ini Java API -->

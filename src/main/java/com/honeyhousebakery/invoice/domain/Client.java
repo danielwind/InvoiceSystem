@@ -6,7 +6,7 @@ package com.honeyhousebakery.invoice.domain;
  */
 public class Client {
     
-    private int id;
+    private String id;
     private String name;
     private String address;
     private String state;
@@ -23,7 +23,7 @@ public class Client {
         
     }
     
-    public Client(String name, String address, String zipCode, String state, int id) {
+    public Client(String name, String address, String zipCode, String state, String id) {
         
         this.id = id;
         this.name = name;
@@ -44,14 +44,14 @@ public class Client {
     /**
      * @return the id
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

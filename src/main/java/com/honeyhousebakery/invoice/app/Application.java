@@ -1,6 +1,6 @@
 package com.honeyhousebakery.invoice.app;
 
-import com.honeyhousebakery.invoice.datasource.HsqlEmbeddedServer;
+import com.honeyhousebakery.invoice.datasource.MongoDBConnector;
 import com.honeyhousebakery.invoice.domain.Client;
 import com.honeyhousebakery.invoice.domain.Invoice;
 import com.honeyhousebakery.invoice.domain.Order;
@@ -8,14 +8,12 @@ import com.honeyhousebakery.invoice.domain.Purchase;
 import com.honeyhousebakery.invoice.pdf.PDFManager;
 import com.honeyhousebakery.invoice.utils.DateUtil;
 import com.honeyhousebakery.invoice.utils.FilePathUtil;
-import com.honeyhousebakery.invoice.utils.InvoiceUtil;
 import com.honeyhousebakery.invoice.utils.OrderType;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.math.BigDecimal;
-import java.sql.SQLException;
+import java.net.UnknownHostException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -33,11 +31,11 @@ public class Application extends javax.swing.JFrame {
     
     private static List<Client> clients = null;
     
-    private static DefaultListModel listModel = new DefaultListModel();
+    private static final DefaultListModel listModel = new DefaultListModel();
     
     private static Order currentOrder = null; 
     
-    private static HsqlEmbeddedServer HSQLDB = null;
+    private static MongoDBConnector mongoDB = null;
     /**
      * Creates new form Application
      */
@@ -91,9 +89,6 @@ public class Application extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         invoicesTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        jLabel12 = new javax.swing.JLabel();
-        newKeyField = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Top.png")));
@@ -250,7 +245,7 @@ public class Application extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel6Layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
+                .addContainerGap(32, Short.MAX_VALUE)
                 .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                         .add(jPanel6Layout.createSequentialGroup()
@@ -315,7 +310,7 @@ public class Application extends javax.swing.JFrame {
                 .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(orderWithDiscountTotalTxt, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel8))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 32, Short.MAX_VALUE)
                 .add(invoiceButton)
                 .addContainerGap())
         );
@@ -390,7 +385,7 @@ public class Application extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Invoice ID", "Date", "Client", "Total ($)", "Total + Discount ($)"
+                "Invoice ID", "Date", "Client", "Total ($)", "Discount ($)"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -411,39 +406,15 @@ public class Application extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(251, 250, 250));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel12.setText("Reset From Order ID");
-
-        jButton2.setText("Reset");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel12)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(newKeyField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 142, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton2)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(0, 811, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(10, 10, 10)
-                .add(jLabel12)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(newKeyField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton2))
-                .addContainerGap(97, Short.MAX_VALUE))
+            .add(0, 151, Short.MAX_VALUE)
         );
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
@@ -464,7 +435,7 @@ public class Application extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
+                .addContainerGap(53, Short.MAX_VALUE)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(orderRetrievalBtn)
                     .add(jLabel7))
@@ -492,9 +463,9 @@ public class Application extends javax.swing.JFrame {
                 
                 Client selectedClient = null;
                 
-                for (int i = 0; i < clients.size(); i++) {
-                    if(clients.get(i).getName().equals(jList1.getSelectedValue())){
-                        selectedClient = clients.get(i);
+                for (Client client : clients) {
+                    if (client.getName().equals(jList1.getSelectedValue())) {
+                        selectedClient = client;
                         break;
                     }
                 }
@@ -637,47 +608,35 @@ public class Application extends javax.swing.JFrame {
 
     private void orderRetrievalBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderRetrievalBtnActionPerformed
         
-        try {
+        List<Invoice> invoices = mongoDB.queryForOrders();
             
-            List<Invoice> invoices = HSQLDB.queryForOrders();
-            
-            //clear table 
-            while(invoicesTable.getRowCount() > 1) {
+        //clear table 
+        while(invoicesTable.getRowCount() > 1) {
                ((DefaultTableModel) invoicesTable.getModel()).removeRow(0);
-            }
+        }
             
             
-            DefaultTableModel model = (DefaultTableModel) invoicesTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) invoicesTable.getModel();
            
-            if(invoices != null){
+        if(invoices != null){
                 
-                for (int i = 0; i < invoices.size(); i++) {
-                   //add line to table
-                   model.insertRow(i, invoices.get(i).toObjectArray()); 
-                }
+            for (int i = 0; i < invoices.size(); i++) {
+                //add line to table
+                model.insertRow(i, invoices.get(i).toObjectArray()); 
             }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_orderRetrievalBtnActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+        /*
         if(!newKeyField.getText().isEmpty()){
-            try {
-                
-                HSQLDB.alterOrderPrimaryKey(newKeyField.getText());
-                
-                //clean stuff after successful processing
-                newKeyField.setText("");
-                invoiceIdTxt.setText(String.valueOf(HSQLDB.queryForLastUpdatedOrderId()));
-            } catch (SQLException ex) {
-                Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //clean stuff after successful processing
+            //newKeyField.setText("");
+            invoiceIdTxt.setText(currentOrder.getInvoiceId());
         }else {
             JOptionPane.showMessageDialog(null, "Please enter order ID.");
         }
+        */
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void updateOrderTotal() {
@@ -686,25 +645,12 @@ public class Application extends javax.swing.JFrame {
     }
     
     private void saveOrderInDatabase(Order order) {
-        try {
-           
-            HSQLDB.saveOrder(order);
-        
-        } catch (SQLException ex) {
-            Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            mongoDB.saveOrder(order);
     }
     
     private void resetForm() {
         
-        //fetch order id from database
-        try {
-            InvoiceUtil.updateInitialInvoiceID(HSQLDB.queryForLastUpdatedOrderId());
-        } catch (SQLException ex) {
-            Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        currentOrder = new Order();
+        currentOrder = new Order(mongoDB.getLastExistingPlusOneSequence());
         invoiceDateTxt.setText(DateUtil.invoiceGUIFormattedDate());
         invoiceIdTxt.setText(currentOrder.getInvoiceId());
                        
@@ -725,33 +671,27 @@ public class Application extends javax.swing.JFrame {
     
     /**
      * @param args the command line arguments
+     * @throws UnknownHostException
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws UnknownHostException {
         
         try {
 
             //MAC-OSX only
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Honey House Bakery Invoice System");
             
-            //externalize db config
-            FilePathUtil.createDatabaseFile();
+            //instantiate MongoDB
+            mongoDB = new MongoDBConnector();
             
-            //instantiate HSQLDB
-            HSQLDB = new HsqlEmbeddedServer();
-        
-            //Initialize DB and get the latest index
-            HSQLDB.connect();
-            
-            clients = HSQLDB.getClientList();
-        
-            //Update in-memory ID reference
-            InvoiceUtil.updateInitialInvoiceID(HSQLDB.queryForLastUpdatedOrderId());
-            
+            //get clients list
+            clients = mongoDB.getClientList();
+
             //create client directories
             FilePathUtil.createInvoicesMainDirectoryTreeStructure(clients);
             
             //create new order
-            currentOrder = new Order();
+           currentOrder = new Order(mongoDB.getLastExistingPlusOneSequence());
+            
             
             //get the UI Look and Feel of the host operating system
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
@@ -764,13 +704,13 @@ public class Application extends javax.swing.JFrame {
             Logger.getLogger(Application.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Application.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            
+            @Override
             public void run() {
                
                //get Screen dimensions
@@ -815,11 +755,10 @@ public class Application extends javax.swing.JFrame {
                //maximize window
                applicationFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                
-               //populate Client list
-               
-               for (int i = 0; i < clients.size(); i++) {
-                   listModel.addElement(clients.get(i).getName());
-               } 
+                for (Client client : clients) {
+                    listModel.addElement(client.getName());
+                } 
+                
             }
         });
     }
@@ -833,12 +772,10 @@ public class Application extends javax.swing.JFrame {
     private javax.swing.JLabel invoiceIdTxt;
     private javax.swing.JTable invoicesTable;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -858,7 +795,6 @@ public class Application extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField nameTxt;
-    private javax.swing.JTextField newKeyField;
     private javax.swing.JButton orderRetrievalBtn;
     private javax.swing.JTextField orderWithDiscountTotalTxt;
     private javax.swing.JTextField priceInput;
