@@ -10,7 +10,7 @@ public class InvoiceUtil {
     
     private static String LEADING_ZEROES = "";
     
-    public static final int DEFAULT_ID = 291;
+    public static final int DEFAULT_ID = 292;
     
     public static String getNextSequenceId(int id) {
         
